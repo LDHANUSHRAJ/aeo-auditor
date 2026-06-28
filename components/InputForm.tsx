@@ -87,22 +87,22 @@ export default function InputForm() {
         <div>
           <label style={labelStyle}>Business Name {req}</label>
           <input type="text" value={form.businessName} onChange={(e) => update("businessName", e.target.value)}
-            placeholder="e.g. Lenzify" className="input-premium" required />
+            placeholder="e.g. Lenzify" className="input-premium" required suppressHydrationWarning />
         </div>
         <div>
           <label style={labelStyle}>Website URL</label>
           <input type="url" value={form.websiteUrl} onChange={(e) => update("websiteUrl", e.target.value)}
-            placeholder="https://lenzify.in" className="input-premium" />
+            placeholder="https://lenzify.in" className="input-premium" suppressHydrationWarning />
         </div>
         <div>
           <label style={labelStyle}>Business Category {req}</label>
           <input type="text" value={form.category} onChange={(e) => update("category", e.target.value)}
-            placeholder="e.g. eyewear store" className="input-premium" required />
+            placeholder="e.g. eyewear store" className="input-premium" required suppressHydrationWarning />
         </div>
         <div>
           <label style={labelStyle}>City / Location {req}</label>
           <input type="text" value={form.city} onChange={(e) => update("city", e.target.value)}
-            placeholder="e.g. Bengaluru" className="input-premium" required />
+            placeholder="e.g. Bengaluru" className="input-premium" required suppressHydrationWarning />
         </div>
       </div>
 
@@ -110,7 +110,7 @@ export default function InputForm() {
       <div>
         <label style={labelStyle}>Your Email {req}</label>
         <input type="email" value={form.email} onChange={(e) => update("email", e.target.value)}
-          placeholder="you@example.com" className="input-premium" required />
+          placeholder="you@example.com" className="input-premium" required suppressHydrationWarning />
         <p style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 6 }}>
           Used only to send you your report and occasional AEO tips. No spam.
         </p>
@@ -121,7 +121,7 @@ export default function InputForm() {
         <label style={labelStyle}>Gemini API Key {req}</label>
         <input type="password" value={form.apiKey} onChange={(e) => update("apiKey", e.target.value)}
           placeholder="AIza..." className="input-premium" style={{ fontFamily: "monospace", letterSpacing: "0.05em" }}
-          autoComplete="off" required />
+          autoComplete="off" required suppressHydrationWarning />
         <p style={{ fontSize: 11, color: "var(--text-tertiary)", marginTop: 6 }}>
           Free key at <span style={{ fontFamily: "monospace", color: "var(--red)" }}>aistudio.google.com</span> · Uses gemini-2.5-flash (free tier)
         </p>
@@ -133,7 +133,7 @@ export default function InputForm() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
           {[0, 1, 2].map((i) => (
             <input key={i} type="text" value={form.competitors[i]} onChange={(e) => updateCompetitor(i, e.target.value)}
-              placeholder={`Competitor ${i + 1}`} className="input-premium" />
+              placeholder={`Competitor ${i + 1}`} className="input-premium" suppressHydrationWarning />
           ))}
         </div>
       </div>
@@ -146,7 +146,7 @@ export default function InputForm() {
       )}
 
       <button type="submit" disabled={validating} className="btn-cta"
-        style={{ width: "100%", fontSize: 15, height: 52 }}>
+        style={{ width: "100%", fontSize: 15, height: 52 }} suppressHydrationWarning>
         {validating ? "Validating key..." : "Generate Audit Queries →"}
       </button>
     </form>
