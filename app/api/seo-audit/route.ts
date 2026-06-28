@@ -173,76 +173,19 @@ async function checkHtmlSignals(url: string): Promise<{
 }
 
 // ── Sub-system B2: Lighthouse audit ──────────────────────────────────────────
-async function runLighthouse(url: string): Promise<LighthouseResult> {
-  try {
-    let browser: import("puppeteer").Browser | import("puppeteer-core").Browser;
-
-    if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
-      // Serverless: use @sparticuz/chromium + puppeteer-core
-      const chromium = await import("@sparticuz/chromium").catch(() => null);
-      const puppeteerCore = await import("puppeteer-core");
-      if (!chromium) throw new Error("@sparticuz/chromium not available");
-      browser = await puppeteerCore.default.launch({
-        args: chromium.default.args,
-        executablePath: await chromium.default.executablePath(),
-        headless: true,
-      });
-    } else {
-      // Local dev: puppeteer bundles its own Chromium
-      const puppeteer = await import("puppeteer");
-      browser = await puppeteer.default.launch({ headless: true });
-    }
-
-    const wsEndpoint = browser.wsEndpoint();
-    const port = parseInt(new URL(wsEndpoint).port);
-
-    const lighthouse = await import("lighthouse");
-    const result = await lighthouse.default(url, {
-      port,
-      output: "json",
-      logLevel: "silent",
-      onlyCategories: ["seo", "performance"],
-      disableFullPageScreenshot: true,
-    } as Parameters<typeof lighthouse.default>[1]);
-
-    await browser.close();
-
-    if (!result?.lhr) throw new Error("No Lighthouse result");
-
-    const lhr = result.lhr;
-    const seoScore = Math.round((lhr.categories.seo?.score ?? 0) * 100);
-    const perfScore = Math.round((lhr.categories.performance?.score ?? 0) * 100);
-
-    const audits = lhr.audits;
-    const failingAudits = Object.entries(audits)
-      .filter(([, a]) => a.score !== null && a.score < 0.9 && a.score !== undefined)
-      .map(([, a]) => a.title)
-      .filter(Boolean)
-      .slice(0, 8);
-
-    return {
-      seoScore,
-      performanceScore: perfScore,
-      hasMetaDescription: (audits["meta-description"]?.score ?? 0) >= 0.9,
-      hasViewport: (audits["viewport"]?.score ?? 0) >= 0.9,
-      hasDocumentTitle: (audits["document-title"]?.score ?? 0) >= 0.9,
-      hasCanonical: (audits["canonical"]?.score ?? 1) >= 0.9,
-      failingAudits,
-      timedOut: false,
-    };
-  } catch (err) {
-    return {
-      seoScore: 0,
-      performanceScore: 0,
-      hasMetaDescription: false,
-      hasViewport: false,
-      hasDocumentTitle: false,
-      hasCanonical: false,
-      failingAudits: [],
-      timedOut: true,
-      error: err instanceof Error ? err.message : String(err),
-    };
-  }
+async function runLighthouse(_url: string): Promise<LighthouseResult> {
+  // Lighthouse disabled until SEO module is re-enabled (puppeteer/chromium not installed)
+  return {
+    seoScore: 0,
+    performanceScore: 0,
+    hasMetaDescription: false,
+    hasViewport: false,
+    hasDocumentTitle: false,
+    hasCanonical: false,
+    failingAudits: [],
+    timedOut: true,
+    error: "Lighthouse not available in AEO-only mode",
+  };
 }
 
 // ── Main handler ─────────────────────────────────────────────────────────────
